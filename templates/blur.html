@@ -1,0 +1,18 @@
+{% extends 'index.html' %}
+{% block title%} Show blur image {% endblock %}
+
+{% block content%}
+
+
+
+  <div class="col-sm-6">
+    <div class="card">
+    <img class="card-img-top" src="{{url_for('static',filename='blur.jpg')}}">
+      <div class="card-body">
+        <h5 class="card-title">Obraz po rozmazaniu</h5>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock%}
