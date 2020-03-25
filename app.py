@@ -1,9 +1,9 @@
-import os
 from flask import Flask, flash, request, redirect, url_for, render_template, session, send_from_directory
 from werkzeug.utils import secure_filename
 from PIL import ImageFilter
 from PIL import Image
 import os
+import glob
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 UPLOAD_FOLDER = os.path.join(APP_ROOT,'static/upload')
@@ -52,7 +52,15 @@ def blur_image():
     bluredImage.save(pathToSave)
     return render_template('blur.html')
 
-
+@app.route('/reset', methods=['GET','POST'])
+def reset():
+    file = glob.glob(os.path.join(APP_ROOT,'static/upload/*'))
+    for f in file:
+        print('Delete file: ' + f)
+        os.remove(f)
+    print('Delete blur.jpg')
+    os.remove(os.path.join(APP_ROOT,'static/blur.jpg'))
+    return render_template('index.html')
                                 
 if __name__ == '__main__':
     app.run(debug=True) 
