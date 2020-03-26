@@ -13,6 +13,8 @@ app = Flask(__name__)
 app.secret_key = "secretkey"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+
 print(UPLOAD_FOLDER)
 @app.route("/")
 def upload_form():
@@ -39,7 +41,7 @@ def upload_file():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             return redirect(url_for('upload_file',filename=filename))
-    return render_template('index.html')
+    return render_template('sended_file.html')
 
 @app.route('/blur_image', methods=['GET','POST'])
 def blur_image():

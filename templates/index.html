@@ -28,19 +28,23 @@
       <form id="blur-image" class="p-1" action="{{ url_for('blur_image')}}" methods="GET" enctype="multipart/form-data">
         <input type="submit" class="btn btn-primary btn-sm " value="Rozmazuj obraz"/>
       </form> 
+      <form id="blur-image" class="p-1" action="{{ url_for('reset')}}" methods="DELETE" enctype="multipart/form-data">
+        <input type="submit" class="btn btn-primary btn-sm " value="Reset"/>
+      </form>
     </div>
-    <div class="row">
-      <div class="col-sm-6">
-        <div class="card">
-          <img class="card-img-top" src="C:\Users\Janusz\Desktop\pracaInzynierska\static\upload\DSC_0242.JPG">
-        <div class="card-body">
-          <h5 class="card-title">Obraz przed rozmazaniem</h5>
+    
+    <div class="container">
+      <div class="row">
+        <div class="col-sm">
+          {%block sendedfile%}
+          {%endblock%}
+        </div>
+        <div class="col-sm">
+          {%block bluredimage%}
+          {%endblock%}
         </div>
       </div>
-    </div>
-    {%block content%}
-
-    {%endblock%}
+  
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
