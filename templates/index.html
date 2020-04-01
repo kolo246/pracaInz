@@ -23,12 +23,11 @@
       <form class="form-control-sm" id="upload-form" action="{{ url_for('upload_file') }}" method="POST" enctype="multipart/form-data">
         <input type="file" name="file" accept="static/upload/*"/>
         <button type="submit" class="btn btn-primary btn-sm">Wyślij</button>
-
       </form>
       <form id="blur-image" class="p-1" action="{{ url_for('blur_image')}}" methods="GET" enctype="multipart/form-data">
         <input type="submit" class="btn btn-primary btn-sm " value="Rozmazuj obraz"/>
       </form> 
-      <form id="blur-image" class="p-1" action="{{ url_for('reset')}}" methods="DELETE" enctype="multipart/form-data">
+      <form id="blur-image" class="p-1" action="{{ url_for('reset')}}" methods="GET" enctype="multipart/form-data">
         <input type="submit" class="btn btn-primary btn-sm " value="Reset"/>
       </form>
     </div>
@@ -44,6 +43,7 @@
           {%endblock%}
         </div>
       </div>
+    </div>
   
 
     <!-- Optional JavaScript -->

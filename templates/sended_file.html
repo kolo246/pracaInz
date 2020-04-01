@@ -1,17 +1,12 @@
 {% extends 'index.html' %}
 {% block title%} Show sended file {% endblock %}
-
 {% block sendedfile%}
 
-
-
-
     <div class="card" style="width: 27rem;">
-    <img class="card-img-top" alt="Card image cap" src="{{url_for('static',filename='blur.jpg')}}">
+    <img class="card-img-top" alt="Card image cap" src="{{fileurl}}">
       <div class="card-body">
         <h5 class="card-title">Obraz przed rozmazaniem</h5>
       </div>
     </div>
-
 
 {% endblock%}

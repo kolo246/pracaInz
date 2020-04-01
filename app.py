@@ -6,7 +6,8 @@ import os
 import glob
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
-UPLOAD_FOLDER = os.path.join(APP_ROOT,'static/upload')
+STATIC_UPLOAD = 'static/upload'
+UPLOAD_FOLDER = os.path.join(APP_ROOT, STATIC_UPLOAD)
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 app = Flask(__name__)
@@ -40,11 +41,15 @@ def upload_file():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('upload_file',filename=filename))
-    return render_template('sended_file.html')
+            fileurl = os.path.join(STATIC_UPLOAD,filename)
+            return render_template('sended_file.html', fileurl=fileurl)
 
 @app.route('/blur_image', methods=['GET','POST'])
 def blur_image():
+
+    if len(os.listdir(os.path.join(APP_ROOT,'static/upload'))) == 0:
+        return render_template('index.html')
+
     path = os.path.join(APP_ROOT,'static/')
     pathInPut = os.path.join(APP_ROOT,'static/upload/')
     filename = os.listdir(os.path.join(APP_ROOT,'static/upload'))
@@ -54,8 +59,9 @@ def blur_image():
     bluredImage.save(pathToSave)
     return render_template('blur.html')
 
-@app.route('/reset', methods=['GET','POST'])
+@app.route('/reset', methods=['GET'])
 def reset():
+    
     file = glob.glob(os.path.join(APP_ROOT,'static/upload/*'))
     for f in file:
         print('Delete file: ' + f)
