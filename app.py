@@ -42,18 +42,13 @@ def upload_file():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             fileurl = os.path.join(STATIC_UPLOAD,filename)
             return render_template('sended_file.html', fileurl=fileurl)
-
-def isEmpty():
-    if len(os.listdir(STATIC_UPLOAD)) == 0 and len(os.listdir(os.path.join(APP_ROOT,'static'))) == 1:
-        print("folder jest pusty !!!!")
-        return True
+    return render_template('index.html')
 
 @app.route('/blur_image', methods=['GET','POST'])
 def blur_image():
-
-    if isEmpty():
-        return render_template('index.html')
     
+    if len(os.listdir(STATIC_UPLOAD)) == 0:
+        return render_template('index.html')
     path = os.path.join(APP_ROOT,'static/')
     pathInPut = os.path.join(APP_ROOT,'static/upload/')
     filename = os.listdir(os.path.join(APP_ROOT,'static/upload'))
@@ -65,14 +60,16 @@ def blur_image():
 
 @app.route('/reset', methods=['GET'])
 def reset():
-    
-    if isEmpty():
+
+    if len(os.listdir(STATIC_UPLOAD)) == 0:
         return render_template('index.html')
 
     fileUpload = glob.glob(os.path.join(APP_ROOT,'static/upload/*'))
     for f in fileUpload:
         os.remove(f)
-    os.remove(os.path.join(APP_ROOT,'static/blur.jpg'))
+    if len(os.listdir(os.path.join(APP_ROOT,'static'))) == 2:
+        os.remove(os.path.join(APP_ROOT,'static/blur.jpg'))
+    
     return render_template('index.html')
                                 
 if __name__ == '__main__':
