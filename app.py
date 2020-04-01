@@ -16,7 +16,6 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
-print(UPLOAD_FOLDER)
 @app.route("/")
 def upload_form():
     return render_template('index.html')
@@ -43,7 +42,6 @@ def upload_file():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             fileurl = os.path.join(STATIC_UPLOAD,filename)
             return render_template('sended_file.html', fileurl=fileurl)
-
 
 def isEmpty():
     if len(os.listdir(STATIC_UPLOAD)) == 0 and len(os.listdir(os.path.join(APP_ROOT,'static'))) == 1:
