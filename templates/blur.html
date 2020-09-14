@@ -1,11 +1,18 @@
-{% extends 'sended_file.html' %}
+{% extends 'index.html' %}
 {% block title%} Show blur image {% endblock %}
 {% block bluredimage%}
   
     <div class="card" style="width: 27rem;">
-    <img class="card-img-top" src="{{url_for('static',filename='blur.jpg')}}">
+    <img class="card-img-top" src="{{bluredurl}}">
       <div class="card-body">
         <h5 class="card-title">Obraz po rozmazaniu</h5>
+      </div>
+    </div>
+
+    <div class="card" style="width: 27rem;">
+    <img class="card-img-top" src="{{fileurl}}">
+      <div class="card-body">
+        <h5 class="card-title">Obraz przed rozmazaniem</h5>
       </div>
     </div>
 
