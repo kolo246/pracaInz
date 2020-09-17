@@ -31,12 +31,12 @@ spec:
     spec:
       containers:
         - name: locust-master
-          image: gcr.io/[PROJECT_ID]/locust-tasks:latest
+          image: gcr.io/quiet-walker-289510/blur-photo-task:1.4
           env:
             - name: LOCUST_MODE
               value: master
             - name: TARGET_HOST
-              value: https://[TARGET_HOST]
+              value: http://35.226.197.23
           ports:
             - name: loc-master-web
               containerPort: 8089

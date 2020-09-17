@@ -6,7 +6,7 @@ class BlurTaskSet(TaskSet):
 
     @task(1)
     def blur(self):
-        imageFile = os.path.join(os.path.dirname(__file__),'TestingTask\mylluur.jpg')
+        imageFile = os.path.join(os.path.dirname(__file__),'/locust-tasks/mylluur.jpg')
         self.client.post("/blur", files={'file':open(imageFile,'rb')}, verify=False)
             
 
