@@ -74,21 +74,20 @@ def gcsUploadFile():
     if not uploaded_file:
         return 'No file uploaded.', 400
 
-    # Create a Cloud Storage client.
+    #Tworzenie klienta GCS
     client = storage.Client.from_service_account_json(
         'ced0f9b8731e.json')
 
-    # Get the bucket that the file will be uploaded to.
+    #Pobranie bucket'a 
     bucket = client.get_bucket('bucket_upload_image')
 
-    # Create a new blob and upload the file's content.
+    #Stworzenie obiektu blob i upload pliku
     blob = bucket.blob(uploaded_file.filename)
-
     blob.upload_from_string(
         uploaded_file.read(),
         content_type=uploaded_file.content_type
     )
-    
+    #Tworzenie podpisanego URL z 30 minutowym czasem dostepu
     url_upload_image = blob.generate_signed_url(
         version = "v4",
         expiration = datetime.timedelta(minutes=30),
