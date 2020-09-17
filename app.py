@@ -69,13 +69,7 @@ def post_blur():
 
 
 def gcsUploadFile():
-    client = storage.Client.from_service_account_json(
-        'ced0f9b8731e.json')
     uploaded_file = request.files.get('file')
-    print(uploaded_file)
-    # image = Image.open(upload_file)
-    # image.resize((480,240))
-    # image.save()
 
     if not uploaded_file:
         return 'No file uploaded.', 400
@@ -114,8 +108,11 @@ def blur_image(current_blob):
     #Zmniejszenie i rozmywanie obrazu
     image.resize(((480, 240)))
     image.save(temp_local_filename)
+    image.close()
+    image = Image.open(temp_local_filename)
     image.filter(ImageFilter.GaussianBlur(15))
     image.save(temp_local_filename)
+    image.close()
     #Upload obrazu do bucket_blured_image
     client = storage.Client.from_service_account_json(
         'ced0f9b8731e.json')
