@@ -6,7 +6,8 @@ from google.cloud import storage
 import random
 import string
 import os
-
+import datetime
+import tempfile
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 STATIC_UPLOAD = 'static/upload'
@@ -51,79 +52,84 @@ def post_blur():
         flash('No selected file')
         return redirect(request.url)
     if file and allowed_file(file.filename):
-        filePath = uploadedFilePath()
+        #filePath = uploadedFilePath()
         # Resize image and save
-        file.save(filePath)
-        resize_image(filePath)
-        print(filePath)
+        #file.save(filePath)
+        #resize_image(filePath)
+        #print(filePath)
         # Upload file to GCS bucket_upload_image
-        fileUrl = gcsUploadFile(filePath)
+        upload_url, upload_blob = gcsUploadFile()
+        print(upload_blob)
+        print(upload_url)
         # Delete file from server
-        print(fileUrl)
-        bluredUrl = blur(filePath)
+        print(upload_url)
+        bluredUrl = blur_image(upload_blob)
         print(bluredUrl)
-        return render_template('blur.html', fileurl=fileUrl, bluredurl=bluredUrl)
+        return render_template('blur.html', fileurl=upload_url, bluredurl=bluredUrl)
 
 
-def gcsUploadFile(filepath):
+def gcsUploadFile():
     client = storage.Client.from_service_account_json(
         'ced0f9b8731e.json')
-    bucket = client.get_bucket('bucket_blured_image')
-    blob = bucket.blob(filepath)
-    blob.upload_from_filename(filepath)
-    fileURL = blob.public_url
-    return fileURL
+    uploaded_file = request.files.get('file')
+    print(uploaded_file)
+    # image = Image.open(upload_file)
+    # image.resize((480,240))
+    # image.save()
 
+    if not uploaded_file:
+        return 'No file uploaded.', 400
 
-def blur(filepath):
+    # Create a Cloud Storage client.
     client = storage.Client.from_service_account_json(
         'ced0f9b8731e.json')
-    # Blur the image using PIL
-    image = Image.open(filepath)
-    bluredImage = image.filter(ImageFilter.GaussianBlur(15))
-    bluredImage.save(filepath)
-    # Upload blur image to 'bucket_blured_image'
+
+    # Get the bucket that the file will be uploaded to.
+    bucket = client.get_bucket('bucket_upload_image')
+
+    # Create a new blob and upload the file's content.
+    blob = bucket.blob(uploaded_file.filename)
+
+    blob.upload_from_string(
+        uploaded_file.read(),
+        content_type=uploaded_file.content_type
+    )
+    
+    url_upload_image = blob.generate_signed_url(
+        version = "v4",
+        expiration = datetime.timedelta(minutes=30),
+        method = "GET")
+    return url_upload_image, blob
+
+def blur_image(current_blob):
+    file_name = current_blob.name
+    print(file_name)
+    extension = os.path.splitext(file_name)[1]
+    print(extension)
+    _, temp_local_filename = tempfile.mkstemp(suffix=extension)
+    #Pobranie obrazu z bucket_upload_image
+    print(temp_local_filename)
+    current_blob.download_to_filename(temp_local_filename)
+    image = Image.open(temp_local_filename)
+    #Zmniejszenie i rozmywanie obrazu
+    image.resize(((480, 240)))
+    image.save(temp_local_filename)
+    image.filter(ImageFilter.GaussianBlur(15))
+    image.save(temp_local_filename)
+    #Upload obrazu do bucket_blured_image
+    client = storage.Client.from_service_account_json(
+        'ced0f9b8731e.json')
     blur_bucket = client.get_bucket('bucket_blured_image')
-    blur_blob = blur_bucket.blob(filepath)
-    blur_blob.upload_from_filename(filepath)
-    fileURL = blur_blob.public_url
-    # Close and delete temp file
-    os.remove(filepath)
-    return fileURL
-
-
-def resize_image(filepath):
-    im = Image.open(filepath)
-    im.resize((480, 240))
-    im.save(filepath)
-    im.close()
-
-
-''' def blur(inputFilePath, outputFilePath):
-    im = Image.open(inputFilePath)
-    bluredImage = im.filter(ImageFilter.GaussianBlur(15))
-    bluredImage.save(outputFilePath) '''
-
-
-def uploadedFilePath():
-    fileName = randomFileName()
-    return os.path.join(STATIC_UPLOAD, fileName)
-
-
-def bluredFilePath():
-    fileName = randomFileName()
-    return os.path.join(STATIC_BLURED, fileName)
-
-
-def randomFileName():
-    return randomString(7) + ".jpg"
-
-
-def randomString(stringLength=10):
-    """Generate a random string of fixed length """
-    letters = string.ascii_lowercase
-    return ''.join(random.choice(letters) for i in range(stringLength))
-
+    blur_blob = blur_bucket.blob(file_name)
+    blur_blob.upload_from_filename(temp_local_filename)
+    #Usuniecie tymczasowgo pliku
+    #os.remove(temp_local_filename)
+    #Utworzenie url_signed 
+    url_blured_image = blur_blob.generate_signed_url(
+        version = "v4",
+        expiration = datetime.timedelta(minutes=30),
+        method = "GET")
+    return url_blured_image
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
