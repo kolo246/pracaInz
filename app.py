@@ -23,16 +23,13 @@ app.config['BLURED_FOLDER'] = BLURED_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
-
 @app.route("/")
 def upload_form():
     return render_template('index.html')
 
-
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
 
 @app.route('/blur', methods=['GET'])
 def upload_file():
@@ -99,19 +96,18 @@ def blur_image(current_blob):
     print(file_name)
     extension = os.path.splitext(file_name)[1]
     print(extension)
-    _, temp_local_filename = tempfile.mkstemp(suffix=extension)
+    fd, temp_local_filename = tempfile.mkstemp(suffix=extension)
     #Pobranie obrazu z bucket_upload_image
+    os.close(fd)
+
     print(temp_local_filename)
     current_blob.download_to_filename(temp_local_filename)
     image = Image.open(temp_local_filename)
     #Zmniejszenie i rozmywanie obrazu
-    image.resize(((480, 240)))
-    image.save(temp_local_filename)
+    image_resized = image.resize(((480, 240)))
+    blured_image = image_resized.filter(ImageFilter.GaussianBlur(15))
     image.close()
-    image = Image.open(temp_local_filename)
-    image.filter(ImageFilter.GaussianBlur(15))
-    image.save(temp_local_filename)
-    image.close()
+    blured_image.save(temp_local_filename)
     #Upload obrazu do bucket_blured_image
     client = storage.Client.from_service_account_json(
         'ced0f9b8731e.json')
@@ -119,7 +115,7 @@ def blur_image(current_blob):
     blur_blob = blur_bucket.blob(file_name)
     blur_blob.upload_from_filename(temp_local_filename)
     #Usuniecie tymczasowgo pliku
-    #os.remove(temp_local_filename)
+    os.remove(temp_local_filename)
     #Utworzenie url_signed 
     url_blured_image = blur_blob.generate_signed_url(
         version = "v4",
