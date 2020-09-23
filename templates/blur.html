@@ -1,19 +1,25 @@
 {% extends 'index.html' %}
 {% block title%} Show blur image {% endblock %}
 {% block bluredimage%}
+
+  <div class="card-deck">
+    <div class="card" style="width: 27rem;">
+      <div class="card-block ">
+      <img class="card-img-top img-fluid" src="{{bluredurl}}">
+        <div class="card-body align-items-center d-flex justify-content-center">
+            <h4>Obraz po rozmazaniu</h4>
+        </div>
+      </div>
+    </div>
   
     <div class="card" style="width: 27rem;">
-    <img class="card-img-top" src="{{bluredurl}}">
-      <div class="card-body">
-        <h5 class="card-title">Obraz po rozmazaniu</h5>
+      <div class="card-block">
+      <img class="card-img-top" src="{{fileurl}}">
+        <div class="card-body align-items-center d-flex justify-content-center">
+            <h4>Obraz po rozmazaniu</h4>
+        </div>
       </div>
     </div>
-
-    <div class="card" style="width: 27rem;">
-    <img class="card-img-top" src="{{fileurl}}">
-      <div class="card-body">
-        <h5 class="card-title">Obraz przed rozmazaniem</h5>
-      </div>
-    </div>
+  </div>
 
 {% endblock%}
