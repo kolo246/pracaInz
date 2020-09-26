@@ -16,6 +16,7 @@
 kind: Service
 apiVersion: v1
 metadata:
+  namespace: blur-photo
   name: locust-master
   labels:
     app: locust-master

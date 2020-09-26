@@ -1,6 +1,7 @@
 apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
+  namespace: blur-photo
   name: blur-photo
 spec:
   scaleTargetRef:

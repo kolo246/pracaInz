@@ -16,6 +16,7 @@
 apiVersion: "extensions/v1beta1"
 kind: "Deployment"
 metadata:
+  namespace: blur-photo
   name: locust-master
   labels:
     name: locust-master
@@ -31,12 +32,12 @@ spec:
     spec:
       containers:
         - name: locust-master
-          image: gcr.io/quiet-walker-289510/blur-photo-task:1.4
+          image: gcr.io/static-sentinel-290713/blur-photo-task:1.1
           env:
             - name: LOCUST_MODE
               value: master
             - name: TARGET_HOST
-              value: http://35.226.197.23
+              value: http://blur-photo
           ports:
             - name: loc-master-web
               containerPort: 8089

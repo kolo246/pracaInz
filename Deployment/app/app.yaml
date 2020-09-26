@@ -1,6 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  namespace: blur-photo
   name: blur-photo-deployment
   labels:
     app: blur-photo
@@ -16,7 +17,7 @@ spec:
     spec:
       containers:
       - name: blur-photo
-        image: gcr.io/quiet-walker-289510/blur-photo:1.4
+        image: gcr.io/static-sentinel-290713/blur-photo:1.1
         ports:
         - containerPort: 5000
         resources:

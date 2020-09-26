@@ -59,7 +59,7 @@ def gcsUploadFile():
         'ced0f9b8731e.json')
 
     #Get the bucket where the file will be uploaded to
-    bucket = client.get_bucket('bucket_upload_image')
+    bucket = client.get_bucket('upload_image_from_app')
 
     #Create a new blob and upload the file
     blob = bucket.blob(uploaded_file.filename)
@@ -97,7 +97,7 @@ def blur_image(current_blob):
     #Upload blured file to a second bucket called 'bucket_blured_image'
     client = storage.Client.from_service_account_json(
         'ced0f9b8731e.json')
-    blur_bucket = client.get_bucket('bucket_blured_image')
+    blur_bucket = client.get_bucket('blured_image')
     blur_blob = blur_bucket.blob(file_name)
     blur_blob.upload_from_filename(temp_local_filename)
 

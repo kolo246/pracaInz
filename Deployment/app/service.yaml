@@ -1,6 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
+  namespace: blur-photo
   name: blur-photo
 spec:
   type: LoadBalancer
