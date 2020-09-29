@@ -37,7 +37,7 @@ spec:
             - name: LOCUST_MODE
               value: master
             - name: TARGET_HOST
-              value: http://blur-photo
+              value: http://blur-photo.blur-photo.svc.cluster.local
           ports:
             - name: loc-master-web
               containerPort: 8089

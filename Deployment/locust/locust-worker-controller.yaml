@@ -38,4 +38,4 @@ spec:
             - name: LOCUST_MASTER
               value: locust-master
             - name: TARGET_HOST
-              value: http://blur-photo
+              value: http://blur-photo.blur-photo.svc.cluster.local
